@@ -1,0 +1,47 @@
+---
+title: "API - plantnet"
+output: html_document
+---
+
+
+devtools::install_github(repo = 'BiologicalRecordsCentre/plantnet')
+
+```{r setup, include=FALSE}
+library(plantnet)
+library(dplyr)
+```
+
+```{r}
+# Get your key from https://my.plantnet.org/
+key <- "2a10ugoftmL4lZtukHdV8DvDWu"   # Personal key, please do not use without permission [limited to 50 uses per day]
+# Get the URL for your image
+imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
+
+getSpecies <- function(key, imageURL) {
+  classifications_check <- identify(key = key, imageURL = imageURL)
+  
+  if(classifications_check[1,1]$score > 10) {
+    classification <- unlist(classifications_check[1,c(2,3)])
+  }
+  # if(between(classifications_check[1,1]$score, 1, 10)) {
+  #   print("Insufficent accuracy. Choosing best name.")
+  #   classifications <- unlist(classifications_check[1,c(2,3)])
+  # }
+  else {
+    print("Insufficent accuracy. Cannot identify name. Please use other images")
+  }
+  
+  print(classification)
+}
+
+species1 <- getSpecies(key, imageURL)
+
+
+```
+
+```{r}
+
+```
+
+
+

@@ -1,0 +1,14 @@
+---
+title: "API connection"
+output: html_document
+---
+
+```{r setup}
+# library()
+```
+
+1. Image -> species name
+  # https://my.plantnet.org/usage
+  # https://github.com/BiologicalRecordsCentre/plantnet
+2. species name -> gbif data
+  

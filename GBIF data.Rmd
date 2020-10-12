@@ -1,0 +1,29 @@
+---
+title: "GBIF data"
+output: html_document
+---
+
+system("apt-get install libgeos-dev")
+install.packages("rgbif")
+
+```{r setup, include=FALSE}
+library("rgbif")
+```
+
+```{r}
+out <- name_lookup(query=species1[1])
+
+# z <- name_lookup(query='Cnaemidophorus', rank="genus")
+# m <- name_lookup(query = 'Helianthus annuus', rank="species")
+
+out$data$nubKey[1]
+# occ_get(key=855998194)
+
+occ_get(key=out$data$key[1])
+
+```
+
+```{r}
+occ_search(out$data$nubKey[1])
+```
+
