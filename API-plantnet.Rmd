@@ -13,7 +13,7 @@ library(dplyr)
 
 ```{r}
 # Get your key from https://my.plantnet.org/
-key <- ""   # Personal key, please do not use without permission [limited to 50 uses per day]
+key <- as.character(read.table("plantnetkey.txt"))   # Personal key, please do not use without permission [limited to 50 uses per day]
 # Get the URL for your image
 imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
 

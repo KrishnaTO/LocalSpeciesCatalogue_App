@@ -23,7 +23,10 @@ occ_get(key=out$data$key[1])
 
 ```
 
+
+
 ```{r}
 occ_search(out$data$nubKey[1])
 ```
 
+> Via GBIf, aim to get some description, and ideally, the metrics section incl [occurances]

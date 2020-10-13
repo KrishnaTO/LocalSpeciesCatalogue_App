@@ -1,0 +1,26 @@
+---
+title: "Image extract"
+output: html_document
+---
+
+system("apt-get install exif")
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(exifr)
+```
+
+> Get from image
+1) Geolocation
+2) Timestamp
+
+```{r}
+# GPS coordinates and timestamp available
+pic1 <- read_exif("Pictures/IMG_20191207_215918.jpg")
+pic1.gps <- pic1[1,startsWith(colnames(pic1),c("FileName", "GPS"))]
+
+# Ex of no GPS data
+pic2 <- read_exif("Pictures/20190615_184057.jpg")
+pic2.gps <- pic2[1,startsWith(colnames(pic2),c("FileName", "GPS"))]
+```
+
