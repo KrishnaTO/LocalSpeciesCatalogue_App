@@ -3,12 +3,26 @@ title: "API connection"
 output: html_document
 ---
 
-```{r setup}
-# library()
-```
-
 1. Image -> species name
   # https://my.plantnet.org/usage
   # https://github.com/BiologicalRecordsCentre/plantnet
 2. species name -> gbif data
   
+
+# Outline
+Outline.Rmd
+
+# Image GPS & timestamp extract [done]
+GPS_extract.Rmd
+
+# Image recognition API via PlantNet [done]
+API-plantnet.Rmd
+plantnetkey.txt
+
+# Species data via GBIF API [incomp]
+GBIF data.Rmd
+
+# Map Image GPS [incomp]
+GPS_map.Rmd
+
+# Shiny time-series

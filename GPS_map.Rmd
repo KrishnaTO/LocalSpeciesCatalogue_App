@@ -1,0 +1,61 @@
+---
+title: "GPS_map"
+output: html_document
+---
+
+system("apt install libudunits2-dev") # sf package
+
+https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html
+https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/
+```{r}
+#install the osmdata, sf, tidyverse and ggmap package
+if(!require("osmdata")) install.packages("osmdata")
+if(!require("sf")) install.packages("sf")
+if(!require("ggmap")) install.packages("ggmap")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#load packages
+library(tidyverse)
+library(osmdata)
+library(sf)
+library(ggmap)
+```
+
+# Get File + GPS data 
+GPS_extract.Rmd [to be done in level 2 script]
+pic1.gps
+
+# osmdata example
+```{r}
+#building the query
+q <- getbb("Madrid") %>%
+      opq() %>%
+       add_osm_feature("amenity", "cinema")
+cinema <- osmdata_sf(q)
+#our background map
+mad_map <- get_map(getbb("Madrid"), maptype = "toner-background")
+#final map
+ggmap(mad_map)+
+  geom_sf(data = cinema$osm_points,
+          inherit.aes = FALSE,
+          colour = "#238443",
+          fill = "#004529",
+          alpha = .5,
+          size = 4,
+          shape = 21)+
+  labs(x = "", y = "")
+
+# General format
+# getbb (bounding box) ->
+#   opq (overpass API query ) ->
+#     add_osm_feature (query feature) ->
+#       osmdata_sf (convert to osmdata object) $osm_points +
+#       get_map (background map per boundary)
+```
+
+> Based on 1-10 observations, map boundaries require minimum area for plotting
+
+

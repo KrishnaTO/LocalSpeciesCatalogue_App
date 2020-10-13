@@ -5,6 +5,11 @@ output: html_document
 
 system("apt-get install exif")
 
+> tools reference
+http://paleolimbot.github.io/tutorial/rexiftool.html
+https://exiftool.org/
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(exifr)
