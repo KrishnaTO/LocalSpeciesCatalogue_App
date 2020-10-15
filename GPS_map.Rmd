@@ -3,40 +3,57 @@ title: "GPS_map"
 output: html_document
 ---
 
+Tasks:
+- Check osmdata package requirement, after settling on Google API method via ggmap package
+- See osmdata::available_features() if maps require additional identity markers
+
 system("apt install libudunits2-dev") # sf package
 
-https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html
-https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/
+Ref1: https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html
+Ref2: https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/
 ```{r}
 #install the osmdata, sf, tidyverse and ggmap package
-if(!require("osmdata")) install.packages("osmdata")
+if(!require("osmdata")) install.packages("osmdata")  
 if(!require("sf")) install.packages("sf")
 if(!require("ggmap")) install.packages("ggmap")
-```
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#Enter Google Maps enabled API key (used Static Maps API)
+##To enable, 
+## 1) must create Google Cloud Platform account, 
+## 2) create a project, then 
+## 3) enable the Maps API key via APIs & Services > Credentials > + Create Credentials > API key 
+register_google(key = rstudioapi::askForPassword("ENTER GOOGLE API KEY HERE"), 
+                account_type = "standard", 
+                write = T)  # write = T save the API key to environment so it doesn't have to be declared more than once
 
-#load packages
-library(tidyverse)
-library(osmdata)
-library(sf)
-library(ggmap)
 ```
 
 # Get File + GPS data 
 GPS_extract.Rmd [to be done in level 2 script]
 pic1.gps
 
-# osmdata example
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#load packages
+library(dplyr)
+library(sf)
+library(ggmap)
+
+# Not used
+#library(osmdata)
+#library(OpenStreetMap)   
+```
+> Based on 1-10 observations, map boundaries require minimum area for plotting
+
 ```{r}
 #building the query
-q <- getbb("Madrid") %>%
+q <- getbb("Toronto") %>%
       opq() %>%
        add_osm_feature("amenity", "cinema")
 cinema <- osmdata_sf(q)
 #our background map
-mad_map <- get_map(getbb("Madrid"), maptype = "toner-background")
+mad_map <- get_map(getbb("Toronto"), maptype = "toner-background")
 #final map
 ggmap(mad_map)+
   geom_sf(data = cinema$osm_points,
@@ -47,15 +64,38 @@ ggmap(mad_map)+
           size = 4,
           shape = 21)+
   labs(x = "", y = "")
-
-# General format
-# getbb (bounding box) ->
-#   opq (overpass API query ) ->
-#     add_osm_feature (query feature) ->
-#       osmdata_sf (convert to osmdata object) $osm_points +
-#       get_map (background map per boundary)
 ```
 
-> Based on 1-10 observations, map boundaries require minimum area for plotting
+> Latitude, Longitude (order)
+
+Note: 
+- If copying coordinates from Google maps, the get_map function requires longitude first, as opposed to the former providing lattitude first
+
+```{r}
+# Get getBB box
+bb <- make_bbox(pic1.gps$GPSLongitude, pic1.gps$GPSLatitude)
+
+# Map tile
+map <- ggmap(get_map(location = c(pic1.gps$GPSLongitude, pic1.gps$GPSLatitude), zoom = 21, maptype = "satellite"))
+```
+
+
+> Ref3: https://www.nceas.ucsb.edu/sites/default/files/2020-04/ggmapCheatsheet.pdf
+
+```{r}
+# Map with gps coordinates
+gps1 <- c(lon = -79.26887718018865, lat = 44.2486202976625)   # randomly taken from Google maps
+map <- get_map(location= gps1, zoom = 21, maptype = "satellite")
+
+ggmap(map) + geom_point(aes(x = gps1[1], y = gps1[2]), 
+                        alpha = .5, 
+                        shape = 21,
+                        color="darkred", 
+                        size = 3)
+
+# Add plant image (low version) to coordinates [attempt Ref3, "4. Annotate figure"]
+
+```
+
 
 

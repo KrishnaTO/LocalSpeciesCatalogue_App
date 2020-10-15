@@ -22,7 +22,7 @@ library(exifr)
 ```{r}
 # GPS coordinates and timestamp available
 pic1 <- read_exif("Pictures/IMG_20191207_215918.jpg")
-pic1.gps <- pic1[1,startsWith(colnames(pic1),c("FileName", "GPS"))]
+pic1.gps <- cbind("FileName"= pic1$FileName, pic1[1,startsWith(colnames(pic1),"GPS")])
 
 # Ex of no GPS data
 pic2 <- read_exif("Pictures/20190615_184057.jpg")

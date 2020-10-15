@@ -8,6 +8,8 @@ output: html_document
   # https://github.com/BiologicalRecordsCentre/plantnet
 2. species name -> gbif data
   
+Docs:
+- To get locations with images, currently must manually enable via camera app > settings > location with photos or similar option
 
 # Outline
 Outline.Rmd
