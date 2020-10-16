@@ -32,10 +32,15 @@ GBIF data.Rmd
 
 # Map Image GPS [done]
 GPS_map.Rmd
+<<<<<<< HEAD
 ```{r}
 map_plot
 ```
 
 # Shiny time-series
 
+=======
+- Added mapping mutliple coordinates
+  - Requires zoom calculation to match viewing non-overlapping observations
+>>>>>>> 035543d66131f73abfef1ee57cc5de4f0ee4fc89
 
