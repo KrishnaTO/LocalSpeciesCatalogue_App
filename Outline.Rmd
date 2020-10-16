@@ -24,7 +24,9 @@ plantnetkey.txt
 # Species data via GBIF API [incomp]
 GBIF data.Rmd
 
-# Map Image GPS [incomp]
+# Map Image GPS [done]
 GPS_map.Rmd
+- Added mapping mutliple coordinates
+  - Requires zoom calculation to match viewing non-overlapping observations
 
 # Shiny time-series
