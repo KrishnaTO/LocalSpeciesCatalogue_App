@@ -7,3 +7,4 @@ Agritech project - A farmer needs to know what's around their fields, in terms o
 
 Get images of plant (insect species too) species with geolocations, and use this R backended system to create a time series map. 
 
+![](demo_pic.png)
