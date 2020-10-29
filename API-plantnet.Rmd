@@ -3,45 +3,83 @@ title: "API - plantnet"
 output: html_document
 ---
 
-
 devtools::install_github(repo = 'BiologicalRecordsCentre/plantnet')
 
 ```{r setup, include=FALSE}
 library(plantnet)
 library(dplyr)
+library(httr)
 ```
+
+#HTTP POST remote images
+https://my.plantnet.org/account/doc
+* Must use POST for local images upload, where GET for online urls
+##Identification service params:
+
+service: https://my-api.plantnet.org/v2/identify/all
+api-key: api-key=2a10ugoftmL4lZtukHdV8DvDWu
+image_1: images=/data/media/image_1.jpeg
+image_2: images=/data/media/image_2.jpeg
+organ_1: organs=flower
+organ_2: organs=leaf
 
 ```{r}
 # Get your key from https://my.plantnet.org/
 key <- as.character(read.table("plantnetkey.txt"))   # Personal key, please do not use without permission [limited to 50 uses per day]
-# Get the URL for your image
-imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
 
 getSpecies <- function(key, imageURL) {
+  
+  # Currently getSpecies only accepts url as the PlantNet API requires image access
+  # Need to allow image submission to API or host image to send url
   classifications_check <- identify(key = key, imageURL = imageURL)
   
   if(classifications_check[1,1]$score > 10) {
     classification <- unlist(classifications_check[1,c(2,3)])
   }
-  # if(between(classifications_check[1,1]$score, 1, 10)) {
-  #   print("Insufficent accuracy. Choosing best name.")
-  #   classifications <- unlist(classifications_check[1,c(2,3)])
-  # }
   else {
     print("Insufficent accuracy. Cannot identify name. Please use other images")
   }
-  
-  print(classification)
+  return(classification)
 }
-
-species1 <- getSpecies(key, imageURL)
-
 
 ```
 
 ```{r}
+# Get the URL for your image
+imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
+species1 <- getSpecies(key, imageURL)
 
+imagepath <- upload_file("/home/agar2/Documents/Local-species-catalogue/Pictures/IMG_20200729_163347.jpg")
 ```
 
+```{r}
+#It's Alive!!
+url <- paste("https://my-api.plantnet.org/v2/identify/all?api-key=", key, sep = "")
+plantnetPOST <- httr::POST(url = url,
+                           add_headers(`Content-Type`="multipart/form-data"),
+                                body = list(
+                                  images = imagepath,
+                                  organs = "flower"
+                                  ),
+                              encode = "multipart"
+                           )
+content(plantnetPOST)
 
+```
+Per Postman building via desktop app connection:
+curl --location --request POST 'https://my-api.plantnet.org/v2/identify/all?api-key=2a10ugoftmL4lZtukHdV8DvDWu' \
+--form 'images=@vfAqlnPvw/IMG_20200729_163347.jpg' \
+--form 'organs=flower'
 
+param: api-key
+body: images{@file}, organs
+
+HTTP Status Code	Reason	Response Model	Headers
+400	Bad Request
+401	Unauthorized
+404	Species Not Found
+413	Payload Too Large
+414	URI Too Long
+415	Unsupported Media Type
+429	Too Many Requests
+500	Internal Server Error

@@ -1,5 +1,5 @@
 ---
-title: "API connection"
+title: "L2-map species"
 output: html_document
 ---
 
@@ -7,9 +7,12 @@ output: html_document
   # https://my.plantnet.org/usage
   # https://github.com/BiologicalRecordsCentre/plantnet
 2. species name -> gbif data
+3. Image -> GPS data
+4. Map image + name + GPS
   
 Docs:
 - To get locations with images, currently must manually enable via camera app > settings > location with photos or similar option
+- Must use image sharable weblink (hosted via accessible server like Google Photos or OneDrive)
 
 # Outline
 Outline.Rmd
@@ -17,30 +20,31 @@ Outline.Rmd
 # Image GPS & timestamp extract [done]
 GPS_extract.Rmd
 ```{r}
-pic1.gps
+imagedata <- getImagedata(imageURL)
 ```
 
 # Image recognition API via PlantNet [done]
 API-plantnet.Rmd
 plantnetkey.txt
 ```{r}
-species1
+imageURL <- 'https://photos.app.goo.gl/srRoYVB7zH3uA6qs9'
+species1 <- getSpecies(key, imageURL)
 ```
+
+## To-Do:
+ - Image hosting option for API image access or image submission to API [done]
+ - Multiple image submission for identification API
 
 # Species data via GBIF API [incomp]
 GBIF data.Rmd
 
 # Map Image GPS [done]
 GPS_map.Rmd
-<<<<<<< HEAD
+
 ```{r}
 map_plot
 ```
 
 # Shiny time-series
 
-=======
-- Added mapping mutliple coordinates
-  - Requires zoom calculation to match viewing non-overlapping observations
->>>>>>> 035543d66131f73abfef1ee57cc5de4f0ee4fc89
 

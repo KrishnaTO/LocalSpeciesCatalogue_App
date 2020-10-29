@@ -13,6 +13,7 @@ https://exiftool.org/
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(exifr)
+library(dplyr)
 ```
 
 > Get from image
@@ -21,11 +22,50 @@ library(exifr)
 
 ```{r}
 # GPS coordinates and timestamp available
-pic1 <- read_exif("Pictures/IMG_20191207_215918.jpg")
-pic1.gps <- cbind("FileName"= pic1$FileName, pic1[1,startsWith(colnames(pic1),"GPS")])
 
-# Ex of no GPS data
-pic2 <- read_exif("Pictures/20190615_184057.jpg")
-pic2.gps <- pic2[1,startsWith(colnames(pic2),c("FileName", "GPS"))]
+getImagedata <- function(location){
+
+# Download and read online image
+# download.file(url = location, "image")
+# loc <- read_exif("image")
+
+# Read online image  
+  loc <- read_exif(location)
+  loc <- loc %>% select(FileName, 
+                        GPSTimeStamp,
+                        GPSDOP,
+                        GPSDateStamp,
+                        GPSLatitude,
+                        GPSLongitude
+               )
+# system("rm image")
+  return(loc)
+}
+
+# pic1 <- read_exif("Pictures/IMG_20191207_215918.jpg")
+# pic1.gps <- cbind("FileName"= pic1$FileName, pic1[1,startsWith(colnames(pic1),"GPS")])
+# 
+# # Ex of no GPS data
+# pic2 <- read_exif("Pictures/20190615_184057.jpg")
+# pic2.gps <- pic2[1,startsWith(colnames(pic2),c("FileName", "GPS"))]
+```
+Image flower = IMG_20200729_163347.jpg
+
+```{r}
+imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
+download.file(imageURL, "temp.jpg"); read_exif("temp.jpg")
+
+imagedata <- getImagedata("Pictures/IMG_20200729_163347.jpg")
+
+# Todo:
+# Write TryCatch methods to distinguish images downloaded via links (ie. Google Photos, etc [must have open access downloadable conditions])
 ```
 
+https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)
+# DOP Value	Rating	Description
+1	Ideal	Highest possible confidence level to be used for applications demanding the highest possible precision at all times.
+1-2	Excellent	At this confidence level, positional measurements are considered accurate enough to meet all but the most sensitive applications.
+2-5	Good	Represents a level that marks the minimum appropriate for making accurate decisions. Positional measurements could be used to make reliable in-route navigation suggestions to the user.
+5-10	Moderate	Positional measurements could be used for calculations, but the fix quality could still be improved. A more open view of the sky is recommended.
+10-20	Fair	Represents a low confidence level. Positional measurements should be discarded or used only to indicate a very rough estimate of the current location.
+'>20'	Poor	At this level, measurements are inaccurate by as much as 300 meters with a 6-meter accurate device (50 DOP × 6 meters) and should be discarded.

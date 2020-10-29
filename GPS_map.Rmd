@@ -77,42 +77,13 @@ map_plot <- ggmap(map) +
                           #color="red", 
                           size = 3)
 
-<<<<<<< HEAD
-# Add geom_labels per observation
-
 # Add plant image (low version) to coordinates [attempt Ref3, "4. Annotate figure"]
 ```
-=======
 
-```{r "GPS data"}
-# Map with gps coordinates
-gps1 <- data.frame(species = "arabidopsis", lon = -79.26887718018865, lat = 44.2486202976625)   # randomly taken from Google maps
-gps2 <- data.frame(species = "arabidopsis", lon = -79.26818923287712, lat = 44.2487061833985)   # randomly taken from Google maps
-gps3 <- data.frame(species = "dinosaur", lon = -79.26616416507017, lat = 44.24929218118515)   # randomly taken from Google maps
+# Create timeseries map, using factors
+## Is there lifespan data via GBIF per species?
 
-gps <- rbind(gps1, gps2, gps3)
-```
+```{r}
 
-```{r "Mapping"}
-# Note: make_bbox works as expected when ggmap packaged sourced via Github, not via Cran version. Remove package and install git version.
-map <- get_map(location = make_bbox(lon = gps$lon, 
-                                    lat = gps$lat),
-               zoom = 17,                                 # Potential: Shinyapp variable
-               maptype = "satellite", 
-               source = "google")
-
-ggmap(map) + 
-  geom_point(data = gps, 
-              aes(colour = species),
-              alpha = 1, 
-              shape = 20,
-              #color="red", 
-              size = 3)
-
-# Add geom_labels per observation
-
->>>>>>> 035543d66131f73abfef1ee57cc5de4f0ee4fc89
-
-# Add plant image (low version) to coordinates [attempt Ref3, "4. Annotate figure"]
 ```
 
