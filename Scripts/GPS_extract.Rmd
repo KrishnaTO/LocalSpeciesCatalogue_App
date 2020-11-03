@@ -21,44 +21,49 @@ library(dplyr)
 2) Timestamp
 
 ```{r}
-# GPS coordinates and timestamp available
-
 getImagedata <- function(location){
-
-# Download and read online image
-# download.file(url = location, "image")
-# loc <- read_exif("image")
-
-# Read online image  
-  loc <- read_exif(location)
-  loc <- loc %>% select(FileName, 
-                        GPSTimeStamp,
-                        GPSDOP,
-                        GPSDateStamp,
-                        GPSLatitude,
-                        GPSLongitude
-               )
-# system("rm image")
-  return(loc)
-}
-
-# pic1 <- read_exif("Pictures/IMG_20191207_215918.jpg")
-# pic1.gps <- cbind("FileName"= pic1$FileName, pic1[1,startsWith(colnames(pic1),"GPS")])
-# 
-# # Ex of no GPS data
-# pic2 <- read_exif("Pictures/20190615_184057.jpg")
-# pic2.gps <- pic2[1,startsWith(colnames(pic2),c("FileName", "GPS"))]
-```
-Image flower = IMG_20200729_163347.jpg
-
-```{r}
-imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
-download.file(imageURL, "temp.jpg"); read_exif("temp.jpg")
-
-imagedata <- getImagedata("Pictures/IMG_20200729_163347.jpg")
+  # Image can be hosted either locally or via URL
+  # If image is online, downloaded locally:
+filename <- ""
+    if(!file.exists(location)){
+    filename <- sub('.*\\/', '', location)
+    download.file(url = location, filename)
+    location <- filename                        #Convert into local URL
+  }
+# Else, image exif is directly returned
+imagedata <- read_exif(location)
 
 # Todo:
 # Write TryCatch methods to distinguish images downloaded via links (ie. Google Photos, etc [must have open access downloadable conditions])
+
+# [Feature] Minimize column data
+  # Potential select property extraction for GPS data (Need to confirm interoperability between image property names)
+  # loc <- loc %>% select(FileName, 
+  #                       GPSTimeStamp,  #Or DateTimeOriginal, FileAccessDate
+  #                       GPSDateStamp,  #Optional
+  #                       GPSDOP,        #Optional, represents `Dilution of Precision` (see table below)
+  #                       GPSLatitude,
+  #                       GPSLongitude
+  #                       )
+
+# Remove downloaded file
+## [Feature] - save to local storage (NoSQL)
+if(filename==location){
+    file.remove(location)
+}
+return(imagedata)
+}
+```
+Image flower = IMG_20200729_163347.jpg
+Image Testing source dataset= https://www.gbif.org/dataset/7a3679ef-5582-4aaa-81f0-8c2545cafc81
+
+```{r}
+# Testing functions
+## Hosted
+imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
+getImagedata(imageURL)
+## Local
+getImagedata("/home/agar2/Pictures/fab3b610b796778928299f535f661984e5eebd7c.jpeg")
 ```
 
 https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)
