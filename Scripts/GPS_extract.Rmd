@@ -2,7 +2,7 @@
 title: "Image extract"
 output: html_document
 ---
-
+> Check with system if exif is installed, if not, install exif
 system("apt-get install exif")
 
 > tools reference
@@ -27,11 +27,17 @@ getImagedata <- function(location){
 filename <- ""
     if(!file.exists(location)){
     filename <- sub('.*\\/', '', location)
-    download.file(url = location, filename)
+    download.file(url = location, filename, quiet = T)
     location <- filename                        #Convert into local URL
   }
 # Else, image exif is directly returned
 imagedata <- read_exif(location)
+
+# Confirm if image has GPS properties
+check_gps_properties <- names(imagedata)
+if(length(grep("GPS", check_gps_properties)) == 0)
+    stop("No GPS data found, please confirm image taken have GPS data through camera settings, then retake")
+  # [Feature] Allow manual GPS coordinates entry via Google Maps copy and paste coordinates
 
 # Todo:
 # Write TryCatch methods to distinguish images downloaded via links (ie. Google Photos, etc [must have open access downloadable conditions])
@@ -54,14 +60,16 @@ if(filename==location){
 return(imagedata)
 }
 ```
-Image flower = IMG_20200729_163347.jpg
 Image Testing source dataset= https://www.gbif.org/dataset/7a3679ef-5582-4aaa-81f0-8c2545cafc81
 
 ```{r}
 # Testing functions
 ## Hosted
-imageURL <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
-getImagedata(imageURL)
+### doesn't contain 'GPS' (will return error)
+getImagedata('https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg')
+### Working (using GBIF source, use 'Identifier' link)
+getImagedata("https://bs.plantnet.org/image/o/090f920a7c32b350e135fe1eec1b2fb4e0d81497")
+
 ## Local
 getImagedata("/home/agar2/Pictures/fab3b610b796778928299f535f661984e5eebd7c.jpeg")
 ```
@@ -74,3 +82,10 @@ https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)
 5-10	Moderate	Positional measurements could be used for calculations, but the fix quality could still be improved. A more open view of the sky is recommended.
 10-20	Fair	Represents a low confidence level. Positional measurements should be discarded or used only to indicate a very rough estimate of the current location.
 '>20'	Poor	At this level, measurements are inaccurate by as much as 300 meters with a 6-meter accurate device (50 DOP × 6 meters) and should be discarded.
+
+```{r}
+gpsdata <- getImagedata("https://bs.plantnet.org/image/o/090f920a7c32b350e135fe1eec1b2fb4e0d81497") 
+gpsdata <- gpsdata %>% select(FileName, contains("Date"), contains("GPS"))
+```
+
+
