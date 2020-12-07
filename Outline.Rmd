@@ -14,37 +14,44 @@ Docs:
 - To get locations with images, currently must manually enable via camera app > settings > location with photos or similar option
 - Must use image sharable weblink (hosted via accessible server like Google Photos or OneDrive)
 
-# Outline
-Outline.Rmd
-
 # Image GPS & timestamp extract [done]
 GPS_extract.Rmd
-```{r}
+```{r Data Input}
 imagedata <- getImagedata(imageURL)
 ```
+TODO
+ - Create image uri (image_id), based on image.gps & image.time (consider ontology uri generation, additional input: Domain)
+STORAGE
+ - Postgres (lo) vs MongoDB (base64)
 
 # Image recognition API via PlantNet [done]
 API-plantnet.Rmd
 plantnetkey.txt
-```{r}
+```{r PlantNet Species Recognition API}
 imageURL <- 'https://photos.app.goo.gl/srRoYVB7zH3uA6qs9'
 species1 <- getSpecies(key, imageURL)
 ```
-
-## To-Do:
- - Image hosting option for API image access or image submission to API [done]
+TODO
  - Multiple image submission for identification API
 
 # Species data via GBIF API [incomp]
 GBIF data.Rmd
+```{r GBIF Data API}
+
+```
 
 # Map Image GPS [done]
 GPS_map.Rmd
-
-```{r}
+```{r OpenStreetMap}
 map_plot
 ```
+TODO
+ - Observation image tile on map
+ - Review GeoServer for hosting/interoperability of geodata
 
 # Shiny time-series
+```{r Shinyapp}
+
+```
 
 
