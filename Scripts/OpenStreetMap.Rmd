@@ -24,9 +24,9 @@ if(!require("ggmap")) devtools::install_github("dkahle/ggmap")
 ## 1) must create Google Cloud Platform account, 
 ## 2) create a project, then 
 ## 3) enable the Maps API key via APIs & Services > Credentials > + Create Credentials > API key 
-register_google(key = rstudioapi::askForPassword("ENTER GOOGLE API KEY HERE"), 
+register_google(key = rstudioapi::askForPassword("ENTER GOOGLE API KEY HERE"),
                 account_type = "standard", 
-                write = T)  # write = T save the API key to environment so it doesn't have to be declared more than once
+                write = T)  # write = T save the API key to environment
 
 ```
 

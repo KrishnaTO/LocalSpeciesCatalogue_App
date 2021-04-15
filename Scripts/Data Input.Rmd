@@ -1,14 +1,23 @@
 ---
 title: "Image extract"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
+
+Geomap image
+
+Docs:
+- To get locations with images, currently must manually enable via camera app > settings > location with photos or similar option
+- Must use image sharable weblink (hosted via accessible server like Google Photos or OneDrive)
+---
+
 > Check with system if exif is installed, if not, install exif
-system("apt-get install exif")
+> system("apt-get install exif")
 
-> tools reference
-http://paleolimbot.github.io/tutorial/rexiftool.html
-https://exiftool.org/
-
+> tools reference <http://paleolimbot.github.io/tutorial/rexiftool.html>
+> <https://exiftool.org/>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -16,16 +25,14 @@ library(exifr)
 library(dplyr)
 ```
 
-> Get from image
-1) GeoTag
-  Note: Based on Exif library (https://exiftool.org/geotag.html), tags will have "GEO..." for geotags
-2) Timestamp
+> Get from image 1) GeoTag Note: Based on Exif library
+> (<https://exiftool.org/geotag.html>), tags will have "GEO..." for
+> geotags 2) Timestamp
 
-> Geotags Listed:
-GPSLatitude        GPSLongitude      GPSAltitude          GPSDateStamp
-GPSLatitudeRef     GPSLongitudeRef   GPSAltitudeRef       GPSTimeStamp
-GPSTrack           GPSSpeed          GPSImgDirection      GPSPitch        
-GPSTrackRef        GPSSpeedRef       GPSImgDirectionRef   GPSRoll
+> Geotags Listed: GPSLatitude GPSLongitude GPSAltitude GPSDateStamp
+> GPSLatitudeRef GPSLongitudeRef GPSAltitudeRef GPSTimeStamp GPSTrack
+> GPSSpeed GPSImgDirection GPSPitch\
+> GPSTrackRef GPSSpeedRef GPSImgDirectionRef GPSRoll
 
 ```{r getImagedata}
 getImagedata <- function(imageURL){
@@ -40,6 +47,7 @@ getImagedata <- function(imageURL){
         imageURL <- filename
       })
   
+  # TODO Get tags if exist
   imagedata <- read_exif(imageURL, tags = c("FileName",
                                             "FileSize",
                                             "ImageSize",
@@ -58,8 +66,10 @@ getImagedata <- function(imageURL){
   if(length(grep("GPS", image.meta)) == 0)
       stop("No GPS data found, please confirm image taken has GPS data through camera settings, then retake")
 
-    # TODO Write TryCatch methods to distinguish image sources (ie. Google Photos/OneDrive/Dropbox, etc)
-    # Images must have open access "downloadable" conditions or have api access to log in to access
+    # TODO Write TryCatch methods to distinguish image sources 
+    # (ie. Google Photos/OneDrive/Dropbox, etc)
+    # Images must have open access "downloadable" conditions 
+    # or have api access to log in to access
     # TODO [Feature] - save to local storage (NoSQL)
 
   # Remove downloaded local file
@@ -69,30 +79,30 @@ getImagedata <- function(imageURL){
   return(imagedata)
 }
 ```
-Image Testing source dataset= https://www.gbif.org/dataset/7a3679ef-5582-4aaa-81f0-8c2545cafc81
+
+Image Testing source dataset=
+<https://www.gbif.org/dataset/7a3679ef-5582-4aaa-81f0-8c2545cafc81>
 
 ```{r}
 # Testing functions
-## Hosted
-### doesn't contain 'GPS' (will return error)
+
+## Hosted, ERROR: doesn't contain 'GPS'
 pic.ext_1 <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
-getImagedata(pic.ext_1)
-### Working (using GBIF source, use 'Identifier' link)
+#getImagedata(pic.ext_1)
+
+## Hosted, Working (using GBIF source, use 'Identifier' link)
 pic.ext_2 <- "https://bs.plantnet.org/image/o/090f920a7c32b350e135fe1eec1b2fb4e0d81497"
 getImagedata(pic.ext_2)
 
-## Local
-pic.int_1 <- "/home/agar2/Pictures/fab3b610b796778928299f535f661984e5eebd7c.jpeg"
+## Local, ERROR: doesn't contain 'filename' in metadata 
+pic.int_1 <- "/home/agar2/Documents/1Projects/Local-species-catalogue/Pictures/fab3b610b796778928299f535f661984e5eebd7c.jpeg"
 getImagedata(pic.int_1)
 ```
 
-https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)
-# DOP Value	Rating	Description
-1	Ideal	Highest possible confidence level to be used for applications demanding the highest possible precision at all times.
-1-2	Excellent	At this confidence level, positional measurements are considered accurate enough to meet all but the most sensitive applications.
-2-5	Good	Represents a level that marks the minimum appropriate for making accurate decisions. Positional measurements could be used to make reliable in-route navigation suggestions to the user.
-5-10	Moderate	Positional measurements could be used for calculations, but the fix quality could still be improved. A more open view of the sky is recommended.
-10-20	Fair	Represents a low confidence level. Positional measurements should be discarded or used only to indicate a very rough estimate of the current location.
-'>20'	Poor	At this level, measurements are inaccurate by as much as 300 meters with a 6-meter accurate device (50 DOP × 6 meters) and should be discarded.
-
-
+[https://en.wikipedia.org/wiki/Dilution_of_precision\_(navigation)](https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)){.uri}
+DOP Value Rating Description 1 Ideal Highest possible confidence level to be used for applications demanding the highest possible precision at all times. 
+- 1-2 Excellent At this confidence level, positional measurements are considered accurate enough to meet all but the most sensitive applications. 
+- 2-5 Good Represents a level that marks the minimum appropriate for making accurate decisions. Positional measurements could be used to make reliable in-route navigation suggestions to the user. 
+- 5-10 Moderate Positional measurements could be used for calculations, but the fix quality could still be improved. A more open view of the sky is recommended. 
+- 10-20 Fair Represents a low confidence level. Positional measurements should be discarded or used only to indicate a very rough estimate of the current location.
+- >20 Poor At this level, measurements are inaccurate by as much as 300 meters with a 6-meter accurate device (50 DOP × 6 meters) and should be discarded.

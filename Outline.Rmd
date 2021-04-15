@@ -3,6 +3,15 @@ title: "L2-map species"
 output: html_document
 ---
 
+Inputs:
+1) image (single plant[category]) with geotags
+Outcomes:
+a) Geomap
+b) Identify
+c) *Details
+d) *Storage
+e) 
+
 1. Image -> species name
   # https://my.plantnet.org/usage
   # https://github.com/BiologicalRecordsCentre/plantnet
@@ -10,23 +19,42 @@ output: html_document
 3. Image -> GPS data
 4. Map image + name + GPS
   
-Docs:
-- To get locations with images, currently must manually enable via camera app > settings > location with photos or similar option
-- Must use image sharable weblink (hosted via accessible server like Google Photos or OneDrive)
+
 
 # Image GPS & timestamp extract [done]
 GPS_extract.Rmd
 ```{r Data Input}
+source(file = "Scripts/DataInput.R")
+DIR = "/home/agar2/Documents/1Projects/Local-species-catalogue/"
+imageURL = paste0(DIR, "Pictures/thistle-5150476_960_720.jpg")
 imagedata <- getImagedata(imageURL)
+
+
+# Image Testing source dataset=
+#   <https://www.gbif.org/dataset/7a3679ef-5582-4aaa-81f0-8c2545cafc81>
+  
+# Testing functions
+
+## Hosted, ERROR: doesn't contain 'GPS'
+pic.ext_1 <- 'https://cdn.pixabay.com/photo/2020/05/09/17/04/thistle-5150476_960_720.jpg'
+#getImagedata(pic.ext_1)
+
+## Hosted, Working (using GBIF source, use 'Identifier' link)
+pic.ext_2 <- "https://bs.plantnet.org/image/o/090f920a7c32b350e135fe1eec1b2fb4e0d81497"
+getImagedata(pic.ext_2)
+
+## Local, ERROR: doesn't contain 'filename' in metadata 
+pic.int_1 <- "/home/agar2/Documents/1Projects/Local-species-catalogue/Pictures/fab3b610b796778928299f535f661984e5eebd7c.jpeg"
+getImagedata(pic.int_1)
 ```
-TODO
- - Create image uri (image_id), based on image.gps & image.time (consider ontology uri generation, additional input: Domain)
+
 STORAGE
  - Postgres (lo) vs MongoDB (base64)
 
 # Image recognition API via PlantNet [done]
 API-plantnet.Rmd
 plantnetkey.txt
+
 ```{r PlantNet Species Recognition API}
 imageURL <- 'https://photos.app.goo.gl/srRoYVB7zH3uA6qs9'
 species1 <- getSpecies(key, imageURL)

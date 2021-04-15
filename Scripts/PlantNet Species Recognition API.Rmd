@@ -39,16 +39,19 @@ getSpecies <- function(key, location, organ) {
   url <- paste("https://my-api.plantnet.org/v2/identify/all?api-key=", key, sep = "")
   if(RCurl::url.exists(location)){
     # Hosted image file via URL
+    # query GET equivalent to cURL params
           plantnetPOST <- httr::GET(url = url, 
-                              query = list(       # query in GET is equivalent to cURL params
+                              query = list(
                                 images =  location,
                                 organs = organ)
                            )
             }
   else({
     # local file path, in accordance with script location
-      try(location <- upload_file(normalizePath(location)), silent = TRUE)
-      plantnetPOST <- httr::POST(url = url,
+      message("Sending local file to server...")
+      try(
+        location <- upload_file(normalizePath(location)), silent = TRUE)
+        plantnetPOST <- httr::POST(url = url,
                              add_headers(`Content-Type`="multipart/form-data"),
                                   body = list(
                                     images = location,
@@ -62,6 +65,7 @@ getSpecies <- function(key, location, organ) {
 # Parse response contents (Note of similar response format between local vs hosted)
    classifications_check <- httr::content(plantnetPOST)
 
+# TODO convert to tryError Warning message
 # Classification score function
   if(classifications_check$results[[1]]$score > 5) {
     species_name <- classifications_check$results[[1]]$species$scientificNameWithoutAuthor[1]
@@ -90,6 +94,14 @@ imageloc <- "../Pictures/IMG_20200729_163347.jpg"
 ```
 
 ```{r}
+# Function test
+## Saved version
+test.id <- species_name <- getSpecies(key, imageloc, organ = "flower")
+
+```
+
+
+```{r rough functions}
 # It's Alive!! 
 # Local image API request
 imageloc_upload <- upload_file(imageloc)
@@ -110,15 +122,6 @@ plantnetPOST <- GET(url = url,
                       organs = organ)
                  )
 
-content(plantnetPOST)
-```
-
-```{r}
-# Function test
-## Saved version
-species_name <- getSpecies(key, imagepath, organ = "flower")
-
-## 
 ```
 
 Per Postman building via desktop app connection:

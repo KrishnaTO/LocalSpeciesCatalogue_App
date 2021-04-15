@@ -3,6 +3,7 @@ title: "GBIF data"
 output: html_document
 ---
 
+
 system("apt-get install libgeos-dev")
 install.packages("rgbif")
 
@@ -19,7 +20,7 @@ out <- name_lookup(query=species1[1])
 out$data$nubKey[1]
 # occ_get(key=855998194)
 
-occ_get(key=out$data$key[1])
+occ_get(key=out$data$nubKey[1])
 
 ```
 
