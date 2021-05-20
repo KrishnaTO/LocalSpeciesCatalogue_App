@@ -11,10 +11,9 @@ requestID = paste(sys_time, filename, sep = "-")
 image = jsonlite::toJSON(data.frame(requestID, filename, sys_time), pretty = T)
 
 # Online path
-if(!file.exists(imageURL)){
-  download.file(url = imageURL, filename, quiet = T)
-  imageURL <- filename
-}  
-imagedata <- read_exif(imageURL
+source(file = "Scripts/downloadImage.R")
+downloadImage(imageURL)
+source(file = "Scripts/ImageExif.R")
+imagedata <- read_exif(imageURL)
                        
 imageJSON <- 
