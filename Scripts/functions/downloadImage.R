@@ -1,5 +1,5 @@
 
-
+# Checks if file is in system; if not, download to local
 downloadImage <- function(imageURL){
   try(
     if(!file.exists(imageURL)){
@@ -8,4 +8,5 @@ downloadImage <- function(imageURL){
       download.file(url = imageURL, filename, quiet = T)
       imageURL <- filename
     })
+  return(imageURL)
 }

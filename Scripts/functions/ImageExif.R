@@ -41,7 +41,5 @@ ImageExif <- function(imageURL){
   # or have api access to log in to access
   # TODO [Feature] - save to local storage (NoSQL)
   
-
-
   return(imagedata)
 }

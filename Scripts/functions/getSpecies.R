@@ -1,5 +1,5 @@
 
-if(!require("plantnet")) install.packages("plantnet"); library(plantnet)
+if(!require("plantnet")) devtools::install_github(repo = 'BiologicalRecordsCentre/plantnet'); library(plantnet)
 library(dplyr)
 if(!require("httr")) install.packages("httr"); library(httr)
 if(!require("RCurl")) install.packages("RCurl"); library(RCurl)
